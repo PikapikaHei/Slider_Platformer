@@ -1,0 +1,27 @@
+{
+    "image1": {
+        "data": "hwQQABAAAAD//////////y8iIiIiIiLyL0RERERERPIvVFVVVVVF8i9Ud3d3d0XyL1SXmZl5RfIvVJeIiHlF8i9Ul6iKeUXyL1SXqIp5RfIvVJeIiHlF8i9Ul5mZeUXyL1R3d3d3RfIvVFVVVVVF8i9ERERERETyLyIiIiIiIvL//////////w==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "Icon 1"
+    },
+    "image3": {
+        "data": "hwQQABAAAAD//////////x8RERERERHxHx//EREREfEfERERERER8R/x/xERERHxH/Hx8f//H/EfERHxIiIf8R/x//EiIh/xH/Hx8SIiH/Ef8f/xIiIf8R8REfH//x/xH/H/EREREfEf8RERERER8R/x/xERERHxHxEREREREfH//////////w==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "Icon"
+    },
+    "image4": {
+        "data": "hwQQABAAAAD//////////x8RERERERHxH///EREREfEfEfERERER8R8R8RERERHxH/8R8f//H/Ef8R/xEREf8R8R//ER8R/xH/Ef8RH/H/Ef/xHx8f8f8R8REfH//x/xH///EREREfEfEfERERER8R8R8RERERHxHxEREREREfH//////////w==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "Level"
+    },
+    "image2": {
+        "data": "hwQQABAAAAD//////////y8iIiIiIiLyLyIiIiIiIvIv8i8iIv8v8i/yLyIiIi/yLyIiIiIiL/IvIiIiIiIv8i8iIiIiIi/yj4iIiIiIj/iPiIiIiIiP+I+IiIiIiI/4j/iPiIiIj/iP+I+IiP+P+I+IiIiIiIj4j4iIiIiIiPj//////////w==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "Icon 2"
+    },
+    "*": {
+        "mimeType": "image/x-mkcd-f4",
+        "dataEncoding": "base64",
+        "namespace": "myImages"
+    }
+}
