@@ -37,6 +37,8 @@ function menu (tilemap2: number) {
             }
             menuIn = 2
         }
+        mySprite.ay = 0
+        mySprite.vx = 0
         controller.moveSprite(mySprite, 100, 100)
         tiles.placeOnTile(mySprite, tiles.getTileLocation(3, 1))
         if (tilemap2 == 3) {
@@ -52,13 +54,24 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`Star`, function (sprite, loca
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (menuIn == -1) {
-        if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
-            mySprite.vy += -200
+        if (follow == 0) {
+            if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
+                mySprite.vy = -200
+            }
+        } else if (follow == 1) {
+            mySprite.vy = -140
+        }
+        if (mySprite.tileKindAt(TileDirection.Center, assets.tile`Jumper`)) {
+            mySprite.vy = -200
         }
     }
 })
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     menu(1)
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Jumper Follow`, function (sprite, location) {
+    follow = 1
+    follows(1)
 })
 function Startup () {
     info.setScore(0)
@@ -67,24 +80,49 @@ function Startup () {
     menu(1)
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`Start Teleporter`, function (sprite, location) {
+    follow = 0
+    follows(0)
     tiles.placeOnRandomTile(mySprite, assets.tile`Start`)
     for (let value of tiles.getTilesByType(assets.tile`Clamed Star`)) {
         tiles.setTileAt(value, assets.tile`Star`)
     }
     info.setScore(previousStar)
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Normal`, function (sprite, location) {
+    follow = 0
+    follows(0)
+})
 function levelList () {
     menuIn = -1
     previousStar = info.score()
     if (currentLevel == 1) {
         tiles.setCurrentTilemap(tilemap`Level 1`)
+    } else if (currentLevel == 2) {
+        tiles.setCurrentTilemap(tilemap`level5`)
     } else {
         game.gameOver(true)
     }
     controller.moveSprite(mySprite, 0, 0)
     tiles.placeOnRandomTile(mySprite, assets.tile`Start`)
 }
+function follows (_type: number) {
+    if (_type == 0) {
+        if (iconChoose == 0) {
+            mySprite.setImage(assets.image`Icon 1`)
+        } else if (iconChoose == 1) {
+            mySprite.setImage(assets.image`Icon 2`)
+        }
+    } else if (_type == 1) {
+        if (iconChoose == 0) {
+            mySprite.setImage(assets.image`Icon 1 1`)
+        } else if (iconChoose == 1) {
+            mySprite.setImage(assets.image`Icon 2 2`)
+        }
+    }
+}
+let iconChoose = 0
 let previousStar = 0
+let follow = 0
 let Level: Sprite = null
 let Icon: Sprite = null
 let Icon_2: Sprite = null
@@ -112,8 +150,10 @@ forever(function () {
         }
     } else if (menuIn == 1) {
         if (mySprite.overlapsWith(Icon_1)) {
+            iconChoose = 0
             mySprite.setImage(assets.image`Icon 1`)
         } else if (mySprite.overlapsWith(Icon_2)) {
+            iconChoose = 1
             mySprite.setImage(assets.image`Icon 2`)
         }
     }
