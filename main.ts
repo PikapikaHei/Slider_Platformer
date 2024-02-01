@@ -37,7 +37,7 @@ function menu (tilemap2: number) {
             }
             menuIn = 2
         }
-        mySprite.ay = 0
+        gravity = 0
         mySprite.vx = 0
         controller.moveSprite(mySprite, 100, 100)
         tiles.placeOnTile(mySprite, tiles.getTileLocation(3, 1))
@@ -55,33 +55,62 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`Star`, function (sprite, loca
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (menuIn == -1) {
         if (follow == 0) {
-            if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
-                mySprite.vy = -200
+            if (gravity >= 0) {
+                if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
+                    mySprite.vy = -200
+                }
+            } else {
+                if (mySprite.isHittingTile(CollisionDirection.Top)) {
+                    mySprite.vy = 200
+                }
             }
         } else if (follow == 1) {
-            mySprite.vy = -140
+            if (gravity >= 0) {
+                mySprite.vy = -100
+            } else {
+                mySprite.vy = 100
+            }
         }
         if (mySprite.tileKindAt(TileDirection.Center, assets.tile`Jumper`)) {
-            mySprite.vy = -200
+            if (gravity >= 0) {
+                mySprite.vy = -200
+            } else {
+                mySprite.vy = 200
+            }
+        } else if (mySprite.tileKindAt(TileDirection.Center, assets.tile`Gravity Up`)) {
+            gravity = -600
+            controller.moveSprite(mySprite, 0, 0)
+        } else if (mySprite.tileKindAt(TileDirection.Center, assets.tile`Gravity Down`)) {
+            gravity = 600
         }
     }
-})
-controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
-    menu(1)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`Jumper Follow`, function (sprite, location) {
     follow = 1
     follows(1)
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Gravity Up 1`, function (sprite, location) {
+    gravity = -600
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Gravity Down 1`, function (sprite, location) {
+    gravity = 600
+})
+controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
+    info.setScore(previousStar)
+    menu(1)
+})
 function Startup () {
     info.setScore(0)
     currentLevel = 1
     currentTilemap = tilemap`Menu`
+    gravity = 600
     menu(1)
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`Start Teleporter`, function (sprite, location) {
     follow = 0
+    gravity = 600
     follows(0)
+    mySprite.vy = 0
     tiles.placeOnRandomTile(mySprite, assets.tile`Start`)
     for (let value of tiles.getTilesByType(assets.tile`Clamed Star`)) {
         tiles.setTileAt(value, assets.tile`Star`)
@@ -93,12 +122,15 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`Normal`, function (sprite, lo
     follows(0)
 })
 function levelList () {
+    gravity = 600
     menuIn = -1
     previousStar = info.score()
     if (currentLevel == 1) {
         tiles.setCurrentTilemap(tilemap`Level 1`)
     } else if (currentLevel == 2) {
-        tiles.setCurrentTilemap(tilemap`level5`)
+        tiles.setCurrentTilemap(tilemap`Level 2`)
+    } else if (currentLevel == 3) {
+        tiles.setCurrentTilemap(tilemap`Level 3`)
     } else {
         game.gameOver(true)
     }
@@ -123,6 +155,7 @@ function follows (_type: number) {
 let iconChoose = 0
 let previousStar = 0
 let follow = 0
+let gravity = 0
 let Level: Sprite = null
 let Icon: Sprite = null
 let Icon_2: Sprite = null
@@ -160,7 +193,7 @@ forever(function () {
 })
 forever(function () {
     if (menuIn == -1) {
-        mySprite.ay = 600
+        mySprite.ay = gravity
         mySprite.vx = 100
     }
 })
