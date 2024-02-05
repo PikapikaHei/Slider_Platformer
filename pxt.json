@@ -4,7 +4,9 @@
     "description": "",
     "dependencies": {
         "device": "*",
-        "Null": "github:PikapikaHei/Null#7683e6ba37acba820829079e53a3647898c77f1c"
+        "Null": "github:PikapikaHei/Null#7683e6ba37acba820829079e53a3647898c77f1c",
+        "Timers": "github:microsoft/arcade-timers#v1.1.0",
+        "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.2"
     },
     "files": [
         "main.blocks",

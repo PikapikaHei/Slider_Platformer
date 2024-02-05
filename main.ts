@@ -1,9 +1,11 @@
 namespace SpriteKind {
     export const Menu = SpriteKind.create()
 }
-scene.onOverlapTile(SpriteKind.Player, assets.tile`Flag`, function (sprite, location) {
-    currentLevel += 1
-    levelList()
+namespace StatusBarKind {
+    export const Percentage = StatusBarKind.create()
+}
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Gravity Up 1`, function (sprite, location) {
+    gravity = -600
 })
 function menu (tilemap2: number) {
     if (tilemap2 >= 1) {
@@ -48,10 +50,6 @@ function menu (tilemap2: number) {
         controller.moveSprite(mySprite, 0, 0)
     }
 }
-scene.onOverlapTile(SpriteKind.Player, assets.tile`Star`, function (sprite, location) {
-    tiles.setTileAt(location, assets.tile`Clamed Star`)
-    info.changeScoreBy(1)
-})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (menuIn == -1) {
         if (follow == 0) {
@@ -82,44 +80,50 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             controller.moveSprite(mySprite, 0, 0)
         } else if (mySprite.tileKindAt(TileDirection.Center, assets.tile`Gravity Down`)) {
             gravity = 600
+        } else if (mySprite.tileKindAt(TileDirection.Center, assets.tile`Force Jumper`)) {
+            if (gravity >= 0) {
+                gravity = -600
+                mySprite.vy = -3000
+            } else {
+                gravity = 600
+                mySprite.vy = 3000
+            }
         }
     }
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Gravity Down 1`, function (sprite, location) {
+    gravity = 600
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Flag`, function (sprite, location) {
+    currentLevel += 1
+    levelList()
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Star`, function (sprite, location) {
+    tiles.setTileAt(location, assets.tile`Clamed Star`)
+    info.changeScoreBy(1)
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Normal`, function (sprite, location) {
+    follow = 0
+    follows(0)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`Jumper Follow`, function (sprite, location) {
     follow = 1
     follows(1)
 })
-scene.onOverlapTile(SpriteKind.Player, assets.tile`Gravity Up 1`, function (sprite, location) {
-    gravity = -600
-})
-scene.onOverlapTile(SpriteKind.Player, assets.tile`Gravity Down 1`, function (sprite, location) {
-    gravity = 600
-})
-controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
-    info.setScore(previousStar)
-    menu(1)
-})
 function Startup () {
     info.setScore(0)
-    currentLevel = 1
+    currentLevel = 4
     currentTilemap = tilemap`Menu`
     gravity = 600
+    speed = 1
+    x = -1
+    y = -1
     menu(1)
 }
-scene.onOverlapTile(SpriteKind.Player, assets.tile`Start Teleporter`, function (sprite, location) {
-    follow = 0
-    gravity = 600
-    follows(0)
-    mySprite.vy = 0
-    tiles.placeOnRandomTile(mySprite, assets.tile`Start`)
-    for (let value of tiles.getTilesByType(assets.tile`Clamed Star`)) {
-        tiles.setTileAt(value, assets.tile`Star`)
-    }
-    info.setScore(previousStar)
-})
-scene.onOverlapTile(SpriteKind.Player, assets.tile`Normal`, function (sprite, location) {
-    follow = 0
-    follows(0)
+controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
+    x = mySprite.x
+    y = mySprite.y
+    menu(1)
 })
 function levelList () {
     gravity = 600
@@ -131,11 +135,21 @@ function levelList () {
         tiles.setCurrentTilemap(tilemap`Level 2`)
     } else if (currentLevel == 3) {
         tiles.setCurrentTilemap(tilemap`Level 3`)
+    } else if (currentLevel == 4) {
+        tiles.setCurrentTilemap(tilemap`Level 4`)
     } else {
         game.gameOver(true)
     }
     controller.moveSprite(mySprite, 0, 0)
     tiles.placeOnRandomTile(mySprite, assets.tile`Start`)
+    if (x != -1) {
+        mySprite.x = x
+    }
+    if (y != -1) {
+        mySprite.y = y
+    }
+    x = -1
+    y = -1
 }
 function follows (_type: number) {
     if (_type == 0) {
@@ -152,16 +166,30 @@ function follows (_type: number) {
         }
     }
 }
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Start Teleporter`, function (sprite, location) {
+    follow = 0
+    gravity = 600
+    follows(0)
+    mySprite.vy = 0
+    tiles.placeOnRandomTile(mySprite, assets.tile`Start`)
+    for (let value of tiles.getTilesByType(assets.tile`Clamed Star`)) {
+        tiles.setTileAt(value, assets.tile`Star`)
+    }
+    info.setScore(previousStar)
+})
 let iconChoose = 0
 let previousStar = 0
+let y = 0
+let x = 0
+let speed = 0
+let currentLevel = 0
 let follow = 0
-let gravity = 0
 let Level: Sprite = null
 let Icon: Sprite = null
 let Icon_2: Sprite = null
 let Icon_1: Sprite = null
 let menuIn = 0
-let currentLevel = 0
+let gravity = 0
 let currentTilemap: tiles.TileMapData = null
 let mySprite: Sprite = null
 scene.setBackgroundColor(9)
@@ -170,8 +198,14 @@ Startup()
 tiles.setCurrentTilemap(currentTilemap)
 scene.cameraFollowSprite(mySprite)
 forever(function () {
-    for (let value of tiles.getTilesByType(assets.tile`myTile`)) {
-        tiles.setWallAt(value, true)
+    if (menuIn == -1) {
+        mySprite.ay = gravity
+        mySprite.vx = 100 * speed
+    }
+})
+forever(function () {
+    for (let value2 of tiles.getTilesByType(assets.tile`myTile`)) {
+        tiles.setWallAt(value2, true)
     }
 })
 forever(function () {
@@ -189,11 +223,5 @@ forever(function () {
             iconChoose = 1
             mySprite.setImage(assets.image`Icon 2`)
         }
-    }
-})
-forever(function () {
-    if (menuIn == -1) {
-        mySprite.ay = gravity
-        mySprite.vx = 100
     }
 })
