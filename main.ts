@@ -112,7 +112,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`Jumper Follow`, function (spr
 })
 function Startup () {
     info.setScore(0)
-    currentLevel = 4
+    currentLevel = 1
     currentTilemap = tilemap`Menu`
     gravity = 600
     speed = 1
