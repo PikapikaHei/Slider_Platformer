@@ -110,6 +110,13 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`Jumper Follow`, function (spr
     follow = 1
     follows(1)
 })
+function statusbars2 () {
+    statusbar = statusbars.create(102, 6, StatusBarKind.Percentage)
+    statusbar.setColor(7, 1)
+    statusbar.setBarBorder(1, 8)
+    statusbar.setLabel("0%", 8)
+    statusbar.positionDirection(CollisionDirection.Top)
+}
 function Startup () {
     info.setScore(0)
     currentLevel = 1
@@ -118,11 +125,13 @@ function Startup () {
     speed = 1
     x = -1
     y = -1
+    savedFollow = -1
     menu(1)
 }
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     x = mySprite.x
     y = mySprite.y
+    savedFollow = follow
     menu(1)
 })
 function levelList () {
@@ -148,8 +157,13 @@ function levelList () {
     if (y != -1) {
         mySprite.y = y
     }
+    if (savedFollow != -1) {
+        follow = savedFollow
+    }
     x = -1
     y = -1
+    savedFollow = -1
+    follows(follow)
 }
 function follows (_type: number) {
     if (_type == 0) {
@@ -179,9 +193,11 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`Start Teleporter`, function (
 })
 let iconChoose = 0
 let previousStar = 0
+let savedFollow = 0
 let y = 0
 let x = 0
 let speed = 0
+let statusbar: StatusBarSprite = null
 let currentLevel = 0
 let follow = 0
 let Level: Sprite = null
