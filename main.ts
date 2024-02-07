@@ -50,6 +50,103 @@ function menu (tilemap2: number) {
         controller.moveSprite(mySprite, 0, 0)
     }
 }
+scene.onOverlapTile(SpriteKind.Player, assets.tile`INVIS SWI`, function (sprite, location) {
+    swiRec += 1
+    if (currentLevel == 5) {
+        if (swiRec == 1) {
+            battleSt = 1
+            Boss = sprites.create(assets.image`Boss 1`, SpriteKind.Enemy)
+            Boss.setFlag(SpriteFlag.GhostThroughWalls, true)
+            tiles.placeOnTile(Boss, mySprite.tilemapLocation())
+            Boss.x += 85
+            Boss.vx = 100
+            tiles.setTileAt(location, assets.tile`transparency16`)
+            tmp4 = [
+            105,
+            106,
+            112,
+            113,
+            121,
+            122,
+            127,
+            128
+            ]
+            for (let value of tmp4) {
+                for (let index = 0; index <= 3; index++) {
+                    tiles.setTileAt(tiles.getTileLocation(value, index + 6), assets.tile`INVIS SWI`)
+                }
+            }
+            tiles.setTileAt(tiles.getTileLocation(tmp4[2], 10), assets.tile`INVIS SWI`)
+            tiles.setTileAt(tiles.getTileLocation(tmp4[3], 10), assets.tile`INVIS SWI`)
+            tiles.setTileAt(tiles.getTileLocation(135, 14), assets.tile`INVIS SWI`)
+            tiles.setTileAt(tiles.getTileLocation(180, 11), assets.tile`INVIS SWI`)
+            tiles.setTileAt(tiles.getTileLocation(214, 6), assets.tile`INVIS SWI`)
+        } else if (swiRec == 2) {
+            tiles.setTileAt(tiles.getTileLocation(107, 7), assets.tile`Select`)
+            tiles.setTileAt(tiles.getTileLocation(108, 7), assets.tile`Select`)
+            for (let index = 0; index <= 3; index++) {
+                tiles.setTileAt(tiles.getTileLocation(tmp4[0], index + 6), assets.tile`transparency16`)
+            }
+        } else if (swiRec == 3) {
+            tiles.setTileAt(tiles.getTileLocation(107, 7), assets.tile`Start Teleporter`)
+            tiles.setTileAt(tiles.getTileLocation(108, 7), assets.tile`Start Teleporter`)
+            for (let index = 0; index <= 3; index++) {
+                tiles.setTileAt(tiles.getTileLocation(tmp4[1], index + 6), assets.tile`transparency16`)
+            }
+        } else if (swiRec == 4) {
+            tiles.setTileAt(tiles.getTileLocation(114, 8), assets.tile`Select`)
+            tiles.setTileAt(tiles.getTileLocation(115, 8), assets.tile`Select`)
+            for (let index = 0; index <= 4; index++) {
+                tiles.setTileAt(tiles.getTileLocation(tmp4[2], index + 6), assets.tile`transparency16`)
+            }
+        } else if (swiRec == 5) {
+            tiles.setTileAt(tiles.getTileLocation(114, 8), assets.tile`Start Teleporter`)
+            tiles.setTileAt(tiles.getTileLocation(115, 8), assets.tile`Start Teleporter`)
+            for (let index = 0; index <= 4; index++) {
+                tiles.setTileAt(tiles.getTileLocation(tmp4[3], index + 6), assets.tile`transparency16`)
+            }
+        } else if (swiRec == 6) {
+            tiles.setTileAt(tiles.getTileLocation(124, 7), assets.tile`Select`)
+            tiles.setTileAt(tiles.getTileLocation(125, 7), assets.tile`Select`)
+            for (let index = 0; index <= 3; index++) {
+                tiles.setTileAt(tiles.getTileLocation(tmp4[4], index + 6), assets.tile`transparency16`)
+            }
+        } else if (swiRec == 7) {
+            tiles.setTileAt(tiles.getTileLocation(124, 7), assets.tile`Start Teleporter`)
+            tiles.setTileAt(tiles.getTileLocation(125, 7), assets.tile`Start Teleporter`)
+            for (let index = 0; index <= 3; index++) {
+                tiles.setTileAt(tiles.getTileLocation(tmp4[5], index + 6), assets.tile`transparency16`)
+            }
+        } else if (swiRec == 8) {
+            tiles.setTileAt(tiles.getTileLocation(129, 8), assets.tile`Select`)
+            tiles.setTileAt(tiles.getTileLocation(130, 8), assets.tile`Select`)
+            for (let index = 0; index <= 3; index++) {
+                tiles.setTileAt(tiles.getTileLocation(tmp4[6], index + 6), assets.tile`transparency16`)
+            }
+        } else if (swiRec == 9) {
+            tiles.setTileAt(tiles.getTileLocation(129, 8), assets.tile`Start Teleporter`)
+            tiles.setTileAt(tiles.getTileLocation(130, 8), assets.tile`Start Teleporter`)
+            for (let index = 0; index <= 3; index++) {
+                tiles.setTileAt(tiles.getTileLocation(tmp4[7], index + 6), assets.tile`transparency16`)
+            }
+        } else if (swiRec == 10) {
+            battleSt = 0
+            sprites.destroy(Boss)
+            tiles.setTileAt(tiles.getTileLocation(135, 14), assets.tile`transparency16`)
+        } else if (swiRec == 11) {
+            battleSt = 1
+            Boss = sprites.create(assets.image`Boss 1`, SpriteKind.Enemy)
+            tiles.placeOnTile(Boss, mySprite.tilemapLocation())
+            Boss.x += 50
+            Boss.vx = 100
+            tiles.setTileAt(tiles.getTileLocation(180, 11), assets.tile`transparency16`)
+        } else if (swiRec == 12) {
+            battleSt = 0
+            sprites.destroy(Boss, effects.fire, 1000)
+            tiles.setTileAt(tiles.getTileLocation(214, 6), assets.tile`transparency16`)
+        }
+    }
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (menuIn == -1) {
         if (follow == 0) {
@@ -88,6 +185,21 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
                 gravity = 600
                 mySprite.vy = 3000
             }
+        } else if (mySprite.tileKindAt(TileDirection.Center, assets.tile`In Teleport0`)) {
+            for (let index = 0; index <= 16; index++) {
+                if (tiles.tileAtLocationEquals(tiles.getTileLocation(Math.ceil(mySprite.x / 16), index), assets.tile`Out Teleport`)) {
+                    tiles.placeOnTile(mySprite, tiles.getTileLocation(Math.ceil(mySprite.x / 16), index))
+                    break;
+                } else if (tiles.tileAtLocationEquals(tiles.getTileLocation(Math.floor(mySprite.x / 16), index), assets.tile`Out Teleport`)) {
+                    tiles.placeOnTile(mySprite, tiles.getTileLocation(Math.floor(mySprite.x / 16), index))
+                    break;
+                }
+            }
+            if (gravity >= 0) {
+                gravity = -600
+            } else {
+                gravity = 600
+            }
         }
     }
 })
@@ -118,6 +230,7 @@ function statusbars2 () {
     statusbar.positionDirection(CollisionDirection.Top)
 }
 function Startup () {
+    swiRec = 0
     info.setScore(0)
     currentLevel = 1
     currentTilemap = tilemap`Menu`
@@ -135,6 +248,8 @@ controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     menu(1)
 })
 function levelList () {
+    battleSt = 0
+    swiRec = 0
     gravity = 600
     menuIn = -1
     previousStar = info.score()
@@ -146,6 +261,8 @@ function levelList () {
         tiles.setCurrentTilemap(tilemap`Level 3`)
     } else if (currentLevel == 4) {
         tiles.setCurrentTilemap(tilemap`Level 4`)
+    } else if (currentLevel == 5) {
+        tiles.setCurrentTilemap(tilemap`Level 5`)
     } else {
         game.gameOver(true)
     }
@@ -183,6 +300,7 @@ function follows (_type: number) {
 scene.onOverlapTile(SpriteKind.Player, assets.tile`Start Teleporter`, function (sprite, location) {
     follow = 0
     gravity = 600
+    swiRec = 0
     follows(0)
     mySprite.vy = 0
     tiles.placeOnRandomTile(mySprite, assets.tile`Start`)
@@ -190,6 +308,13 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`Start Teleporter`, function (
         tiles.setTileAt(value, assets.tile`Star`)
     }
     info.setScore(previousStar)
+    if (currentLevel == 5) {
+        tiles.setTileAt(tiles.getTileLocation(88, 12), assets.tile`INVIS SWI`)
+    }
+    if (battleSt == 1) {
+        sprites.destroy(Boss)
+        battleSt = 0
+    }
 })
 let iconChoose = 0
 let previousStar = 0
@@ -198,8 +323,12 @@ let y = 0
 let x = 0
 let speed = 0
 let statusbar: StatusBarSprite = null
-let currentLevel = 0
 let follow = 0
+let tmp4: number[] = []
+let Boss: Sprite = null
+let battleSt = 0
+let currentLevel = 0
+let swiRec = 0
 let Level: Sprite = null
 let Icon: Sprite = null
 let Icon_2: Sprite = null
@@ -239,5 +368,10 @@ forever(function () {
             iconChoose = 1
             mySprite.setImage(assets.image`Icon 2`)
         }
+    }
+})
+forever(function () {
+    if (battleSt == 1) {
+        Boss.y = mySprite.y
     }
 })
