@@ -145,6 +145,15 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`INVIS SWI`, function (sprite,
             sprites.destroy(Boss, effects.fire, 1000)
             tiles.setTileAt(tiles.getTileLocation(214, 6), assets.tile`transparency16`)
         }
+    } else if (currentLevel == 6) {
+        if (swiRec == 1) {
+            for (let index = 0; index <= 3; index++) {
+                tiles.setTileAt(tiles.getTileLocation(245, index + 4), assets.tile`transparency16`)
+            }
+            if (follow == 2) {
+                tiles.setTileAt(tiles.getTileLocation(252, 5), assets.tile`Star`)
+            }
+        }
     }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -164,6 +173,12 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
                 mySprite.vy = -100
             } else {
                 mySprite.vy = 100
+            }
+        } else if (follow == 2) {
+            if (gravity >= 0) {
+                gravity = -600
+            } else {
+                gravity = 600
             }
         }
         if (mySprite.tileKindAt(TileDirection.Center, assets.tile`Jumper`)) {
@@ -241,6 +256,10 @@ function Startup () {
     savedFollow = -1
     menu(1)
 }
+scene.onOverlapTile(SpriteKind.Player, assets.tile`Fol 2`, function (sprite, location) {
+    follow = 2
+    follows(2)
+})
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     x = mySprite.x
     y = mySprite.y
@@ -263,6 +282,8 @@ function levelList () {
         tiles.setCurrentTilemap(tilemap`Level 4`)
     } else if (currentLevel == 5) {
         tiles.setCurrentTilemap(tilemap`Level 5`)
+    } else if (currentLevel == 6) {
+        tiles.setCurrentTilemap(tilemap`Level 6`)
     } else {
         game.gameOver(true)
     }
@@ -295,6 +316,12 @@ function follows (_type: number) {
         } else if (iconChoose == 1) {
             mySprite.setImage(assets.image`Icon 2 2`)
         }
+    } else if (_type == 2) {
+        if (iconChoose == 0) {
+            mySprite.setImage(assets.image`Icon 1 2`)
+        } else if (iconChoose == 1) {
+            mySprite.setImage(assets.image`Icon 2 22`)
+        }
     }
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`Start Teleporter`, function (sprite, location) {
@@ -310,6 +337,10 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`Start Teleporter`, function (
     info.setScore(previousStar)
     if (currentLevel == 5) {
         tiles.setTileAt(tiles.getTileLocation(88, 12), assets.tile`INVIS SWI`)
+    } else if (currentLevel == 6) {
+        for (let index = 0; index <= 3; index++) {
+            tiles.setTileAt(tiles.getTileLocation(245, index + 4), assets.tile`INVIS SWI`)
+        }
     }
     if (battleSt == 1) {
         sprites.destroy(Boss)
